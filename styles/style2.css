@@ -1,0 +1,63 @@
+body {
+    margin: 0;
+    height: 100vh;
+    width:  100vw;
+    background: radial-gradient(#FBF6EE, #C1F2B0, #65B741);
+    font-family: Verdana;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+nav {
+    background-color: #1E3913;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+.logo {
+    display: flex;
+}
+.logo .highlight {
+    color: #c8f2b1;
+    margin-left: 0.3rem;
+}
+nav p{
+    color: #f7f7f7bb;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    margin: 2rem;
+    background-color: azure;
+    padding: 1.5rem;
+    border-radius: 3rem;
+    min-width: 80vw;
+    min-height: 67vh;
+}
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #1E3913;
+    font-size: 2.7rem;
+    font-weight: 700;
+}
+#addTask {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 12rem;
+    height: 2.5rem;
+    color: azure;
+    background-color: #1E3913;
+    border-radius: 3rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: default;
+    border: none;
+}
