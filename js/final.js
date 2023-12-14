@@ -1,4 +1,6 @@
 // checks if user has registered before, if yes allows user to login
+let u = '';
+let p = '';
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -14,13 +16,16 @@ function login() {
     .then(userData => {
         const foundUser = userData.find(user => user.username === username && user.password === password);
         if (foundUser) {
+            localStorage.setItem('u', username);
+            localStorage.setItem('p', password);
             window.location.href = 'profile.html';        
         } else {
             alert('incorrect username or password');
         }
     })
     .catch(error => {
-        alert("cvvvvvvvvvvv", error.message);
+        console.error('Error while login:', error);
+        alert(error);
     });
 }
 
@@ -51,7 +56,8 @@ function signup() {
         window.location.href = 'index.html';
     })
     .catch(error => {
-        alert(error.message);
+        console.error('Error signing up:', error);
+        alert(error);
     });
 }
 
@@ -61,9 +67,24 @@ function logout() {
 }
 
 // gets tasks from mockAPI shows it on profile.html
-function getTasks(){    
-    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
+function getTasks(username, password){    
+    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/userInfo';
     return fetch(url)
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Failed to fetch userInfo');
+    })
+    .then((userId) => {
+        const user = userId.find(user => user.username === username && user.password === password);
+        if (user) {
+            const id = user.id;
+            return fetch(`${url}/${id}/task`);
+        } else {
+            throw new Error('User id not found');
+        }
+    })
     .then(response => {
         if (response.ok) {
             return response.json();
@@ -90,7 +111,8 @@ function getTasks(){
         }
     })
     .catch(error => {
-        alert(error.message);
+        console.error('Error getting tasks:', error);
+        alert(error);
     });
 }
 
@@ -98,24 +120,40 @@ function getTasks(){
 document.addEventListener('DOMContentLoaded', function() {
     const reload = document.getElementById('tasks');
     reload.innerHTML = '';
-    getTasks();
+    getTasks(localStorage.getItem('u'), localStorage.getItem('p'));
 });
 
 // add tasks to mockAPI and to profile
-function addTask(){
+function addTask(username, password){
     const taskInput = document.getElementById('task');
     const task = taskInput.value;
-    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
+    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/userInfo';
     const newTask = {
         task: task,
         done: false
     };
     if (task != ''){
-        console.log('aaaaaaaaaa')
-        fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(newTask)
+        fetch(url)
+        .then(response => {
+            if (response.ok) {
+                
+                return response.json();
+            }
+            throw new Error('Failed to fetch userInfo');
+        })
+        .then((userId) => {
+            const user = userId.find(user => user.username === username && user.password === password);
+            if (user) {
+                const id = user.id;
+                return fetch(`${url}/${id}/task`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(newTask)
+                });
+            } 
+            else {
+                throw new Error('User id not found');
+            }
         })
         .then(response => {
             if (response.ok) {            
@@ -123,27 +161,30 @@ function addTask(){
             }
             throw new Error('Error adding task');
         })
+        .then(() => {
+            if(task==='')
+                alert('it is empty');
+            else {        
+                let li = document.createElement('li');
+                li.textContent = task;
+                li.setAttribute('contenteditable', 'false');
+                tasks.appendChild(li);
+                let img = document.createElement('img');
+                img.src = './images/edit26.png';
+                img.setAttribute('tabindex', '-1');
+                li.appendChild(img);
+                let p = document.createElement('p');
+                p.innerHTML = '\u00d7';
+                p.setAttribute('tabindex', '-1');
+                li.appendChild(p);
+            }
+            taskInput.value = '';
+            saveTasks();
+        })
         .catch(error => {
-            alert(error.message);
-        });
-        if(task==='')
-            alert('it is empty');
-        else {        
-            let li = document.createElement('li');
-            li.textContent = task;
-            li.setAttribute('contenteditable', 'false');
-            tasks.appendChild(li);
-            let img = document.createElement('img');
-            img.src = './images/edit26.png';
-            img.setAttribute('tabindex', '-1');
-            li.appendChild(img);
-            let p = document.createElement('p');
-            p.innerHTML = '\u00d7';
-            p.setAttribute('tabindex', '-1');
-            li.appendChild(p);
-        }
-        taskInput.value = '';
-        saveTasks();
+            console.error('Error adding task:', error);
+            alert(error);
+        });       
     }
     else {
         alert('It is empty');
@@ -151,20 +192,37 @@ function addTask(){
 }
 
 // delete tasks from mockAPI
-function deleteTask(taskTitle) {
-    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
+function deleteTask(taskTitle, username, password) {
+    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/userInfo';
     fetch(url)
     .then(response => {
-        if (response.ok) {
+        if (response.ok) {            
             return response.json();
         }
-        throw new Error('Failed to fetch tasks');
+        throw new Error('Failed to fetch userInfo');
+    })
+    .then((userId) => {
+        const user = userId.find(user => user.username === username && user.password === password);
+        if (user) {
+            const id = user.id;
+            return fetch(`${url}/${id}/task`);
+        } 
+        else {
+            throw new Error('User id not found');
+        }
+    })
+    .then(response => {
+        if (response.ok) {            
+            return response.json();
+        }
+        throw new Error('Failed to fetch task');
     })
     .then(data => {
         const taskDelete = data.find(task => task.task === taskTitle);
         if (taskDelete) {
-            const id = taskDelete.id;
-            return fetch(`${url}/${id}`, {
+            const tid = taskDelete.id;
+            const uid = taskDelete.userInfoId;
+            return fetch(`${url}/${uid}/task/${tid}`, {
                 method: 'DELETE'
             });
         } else {
@@ -173,25 +231,42 @@ function deleteTask(taskTitle) {
     })
     .catch(error => {
         console.error('Error deleting task:', error);
+        alert(error);
     });
 }
 
 // updates task on mockAPI
-function update(taskTitle, newInput) {   
-    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
+function update(taskTitle, newInput, username, password) {   
+    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/userInfo';
     fetch(url)
     .then(response => {
-        if (response.ok) {
+        if (response.ok) {            
             return response.json();
         }
-        throw new Error('Error updating task');
+        throw new Error('Failed to fetch userInfo');
+    })
+    .then((userId) => {
+        const user = userId.find(user => user.username === username && user.password === password);
+        if (user) {
+            const id = user.id;
+            return fetch(`${url}/${id}/task`);
+        } 
+        else {
+            throw new Error('User id not found');
+        }
+    })
+    .then(response => {
+        if (response.ok) {            
+            return response.json();
+        }
+        throw new Error('Failed to fetch task');
     })
     .then(data => {
-        const getTask = data.find(task => task.task === taskTitle);        
-
+        const getTask = data.find(task => task.task === taskTitle);
         if (getTask) {
-            const id = getTask.id;
-            return fetch(`${url}/${id}`, {
+            const tid = getTask.id;
+            const uid = getTask.userInfoId;
+            return fetch(`${url}/${uid}/task/${tid}`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ task: newInput })
@@ -199,22 +274,39 @@ function update(taskTitle, newInput) {
         } else {
             throw new Error('Task not found');
         }
-    })
+    })    
     .catch(error => {
+        console.error('Error updating task:', error);
         alert(error);
     });
     saveTasks();
 }
 
 // marks task as done on mockAPI
-function done(taskTitle){
-    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
+function done(taskTitle, username, password){
+    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/userInfo';
     fetch(url)
     .then(response => {
-        if (response.ok) {
+        if (response.ok) {            
             return response.json();
         }
-        throw new Error('Error marking task done');
+        throw new Error('Failed to fetch userInfo');
+    })
+    .then((userId) => {
+        const user = userId.find(user => user.username === username && user.password === password);
+        if (user) {
+            const id = user.id;
+            return fetch(`${url}/${id}/task`);
+        } 
+        else {
+            throw new Error('User id not found');
+        }
+    })
+    .then(response => {
+        if (response.ok) {            
+            return response.json();
+        }
+        throw new Error('Failed to fetch task');
     })
     .then(data => {
         const taskDone = data.find(task => task.task === taskTitle);
@@ -223,8 +315,9 @@ function done(taskTitle){
             isDone = true;
 
         if (taskDone) {
-            const id = taskDone.id;
-            return fetch(`${url}/${id}`, {
+            const tid = taskDone.id;
+            const uid = taskDone.userInfoId;
+            return fetch(`${url}/${uid}/task/${tid}`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ done: isDone })
@@ -234,6 +327,7 @@ function done(taskTitle){
         }
     })
     .catch(error => {
+        console.error('Error while marking task done:', error);
         alert(error);
     });
 }
@@ -244,13 +338,13 @@ tasks.addEventListener('click', function(e) {
     if(e.target.tagName === 'LI' && e.target.getAttribute('contenteditable') === 'false'){
         const taskTitle = e.target.textContent.slice(0, -1);
         e.target.classList.toggle('done');
-        done(taskTitle);
+        done(taskTitle, localStorage.getItem('u'), localStorage.getItem('p'));
         saveTasks();
     }
     else if(e.target.tagName === 'P'){
         const taskTitle = e.target.parentElement.textContent.slice(0, -1);
         e.target.parentElement.remove();
-        deleteTask(taskTitle);
+        deleteTask(taskTitle, localStorage.getItem('u'), localStorage.getItem('p'));
         saveTasks();
     }
     else if (e.target.tagName === 'IMG'){
@@ -269,7 +363,7 @@ tasks.addEventListener('click', function(e) {
             text.contentEditable = false;
             text.blur();
             let newInput = text.firstChild.textContent.trim();
-            update(oldTitle, newInput);
+            update(oldTitle, newInput, localStorage.getItem('u'), localStorage.getItem('p'));
         }       
         saveTasks();
     }
@@ -279,17 +373,32 @@ tasks.addEventListener('click', function(e) {
 function all() {
     const reload = document.getElementById('tasks');
     reload.innerHTML = '';
-    getTasks();
+    getTasks(localStorage.getItem('u'), localStorage.getItem('p'));
 }
 // calls function all() when tag with class .all is clicked
 document.querySelector('.all').addEventListener('click', all);
 
 // shows active tasks in profile.html
-function active() {
+function active(username, password) {
     const reload = document.getElementById('tasks');
     reload.innerHTML = ''; 
-    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
+    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/userInfo';
     return fetch(url)
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Failed to fetch userInfo');
+    })
+    .then((userId) => {
+        const user = userId.find(user => user.username === username && user.password === password);
+        if (user) {
+            const id = user.id;
+            return fetch(`${url}/${id}/task`);
+        } else {
+            throw new Error('User id not found');
+        }
+    })
     .then(response => {
         if (response.ok) {
             return response.json();
@@ -315,16 +424,32 @@ function active() {
         }
     })
     .catch(error => {
-        alert(error.message);
+        console.error('Error getting active tasks:', error);
+        alert(error);
     });
 }
 
 // shows completed tasks in profile.html
-function completed() {
+function completed(username, password) {
     const reload = document.getElementById('tasks');
     reload.innerHTML = ''; 
-    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
+    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/userInfo';
     return fetch(url)
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Failed to fetch userInfo');
+    })
+    .then((userId) => {
+        const user = userId.find(user => user.username === username && user.password === password);
+        if (user) {
+            const id = user.id;
+            return fetch(`${url}/${id}/task`);
+        } else {
+            throw new Error('User id not found');
+        }
+    })
     .then(response => {
         if (response.ok) {
             return response.json();
@@ -351,7 +476,8 @@ function completed() {
         }
     })
     .catch(error => {
-        alert(error.message);
+        console.error('Error getting completed tasks:', error);
+        alert(error);
     });
 }
 
@@ -366,3 +492,6 @@ function showTasks(){
 }
 // calls function showTasks()
 showTasks();
+
+const username = localStorage.getItem('u');
+document.getElementById('user').textContent = username;

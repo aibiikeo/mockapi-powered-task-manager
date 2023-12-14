@@ -87,6 +87,7 @@ nav p, nav a {
     border: none;
     color: #1E3913;
     font-size: 1.5rem;
+    border-radius: 3rem;
 }
 
 /* login & signup  buttons */

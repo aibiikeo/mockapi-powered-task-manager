@@ -21,12 +21,13 @@
     <div class="container">
         <!-- sidebar -->
         <aside class="sidebar">
+            <div><p id="user"></></div>
             <!-- all tasks -->
             <p class="all">All</p>
             <!-- active tasks -->
-            <p class="active" onclick="active()">Active</p>
+            <p class="active" onclick="active(localStorage.getItem('u'), localStorage.getItem('p'))">Active</p>
             <!-- completed tasks -->
-            <p class="completed" onclick="completed()">Completed</p>
+            <p class="completed" onclick="completed(localStorage.getItem('u'), localStorage.getItem('p'))">Completed</p>
         </aside>
 
         <!-- inner main -->
@@ -35,13 +36,13 @@
                 <!-- task input field -->
                 <input type="text" placeholder="enter a task" id="task"/>
                 <!-- add task button -->
-                <button onclick="addTask()">Add task</button>
+                <button onclick="addTask(localStorage.getItem('u'), localStorage.getItem('p'))">Add task</button>
             </div>  
             <!-- added tasks will be in this ul tag -->
             <ul id="tasks"></ul>            
         </main>        
     </div>
-    <script src="js/script.js"></script>
+    <script src="js/final.js"></script>
 </body>
 
 </html>

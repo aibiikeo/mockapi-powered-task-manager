@@ -79,6 +79,7 @@ nav p{
     border: none;
     background: transparent;
     margin: 0 0.2em;
+    padding-left: 0.5em;
 }
 .add button {
     width: 8em;
@@ -154,4 +155,15 @@ ul li p:hover {
         left: 0;
         right: 0;
     }
+}
+
+/* for user name */
+div #user {
+    background-color: #1E3913;
+    border-radius: 3em;
+}
+#user {
+    text-align: center;
+    color: azure;
+    padding: 0.2em;
 }
