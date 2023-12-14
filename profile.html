@@ -13,9 +13,21 @@
     </nav>
 
     <div class="container">
-        <button id="addTask">Add task</button>
+        <aside class="sidebar">
+            <p>All</p>
+            <p>Active</p>
+            <p>Completed</p>
+        </aside>
+        <main class="main">
+            <div class="add">
+                <input type="text" placeholder="enter a task" id="task"/>
+                <button onclick="addTask()">Add task</button>
+            </div>  
+            <ul id="tasks"></ul>            
+        </main>        
     </div>
 
+
     <script src="js/script.js"></script>
-</body>
+</body> 
 </html>

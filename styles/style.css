@@ -2,7 +2,7 @@ body {
     margin: 0;
     height: 100vh;
     width:  100vw;
-    background: radial-gradient(#FBF6EE, #C1F2B0, #65B741);
+    background: radial-gradient(#FBF6EE, #C1F2B0, #77e34c);
     font-family: Verdana;
     display: flex;
     flex-direction: column;
@@ -36,7 +36,7 @@ nav a {
     padding: 0.5rem;
 }
 nav p, nav a {
-    color: #f7f7f7bb;
+    color: #e9ebe7;
     font-weight: bold;
     font-size: 2rem;
 }
@@ -45,7 +45,7 @@ nav p, nav a {
     display: flex;
     flex-direction: column;
     margin: auto;
-    background-color: azure;
+    background-color: #F0FFF0;
     padding: 1.5rem;
     border-radius: 3rem;
 }
@@ -71,14 +71,12 @@ nav p, nav a {
     background-color: rgba(150, 180, 145, 0.37);
     border-radius: 3rem;
 }
-
 .input img {
-    margin: 1rem 1rem 1rem 2rem;
+    margin: 1rem;
 }
-
 .input input {
     height: 1.5rem;
-    width: 22rem;
+    width: 20rem;
     background: transparent;
     border: none;
     color: #1E3913;
