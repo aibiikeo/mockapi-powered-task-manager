@@ -1,33 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <link rel="stylesheet" href="styles/style2.css">
 </head>
+
 <body>
+    <!-- navbar -->
     <nav>
+        <!-- logo -->
         <p class="logo">To<span class="highlight">Do</span></p>
+        <!-- logout link -->
         <p id="logout" onclick="logout()">Logout</p>
     </nav>
 
+    <!-- outter main -->
     <div class="container">
+        <!-- sidebar -->
         <aside class="sidebar">
-            <p>All</p>
-            <p>Active</p>
-            <p>Completed</p>
+            <!-- all tasks -->
+            <p class="all">All</p>
+            <!-- active tasks -->
+            <p class="active" onclick="active()">Active</p>
+            <!-- completed tasks -->
+            <p class="completed" onclick="completed()">Completed</p>
         </aside>
+
+        <!-- inner main -->
         <main class="main">
             <div class="add">
+                <!-- task input field -->
                 <input type="text" placeholder="enter a task" id="task"/>
+                <!-- add task button -->
                 <button onclick="addTask()">Add task</button>
             </div>  
+            <!-- added tasks will be in this ul tag -->
             <ul id="tasks"></ul>            
         </main>        
     </div>
-
-
     <script src="js/script.js"></script>
-</body> 
+</body>
+
 </html>

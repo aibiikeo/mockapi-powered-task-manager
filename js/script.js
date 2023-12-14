@@ -1,3 +1,4 @@
+// gets tasks from mockAPI shows it on profile.html
 function getTasks(){    
     const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
     return fetch(url)
@@ -14,7 +15,7 @@ function getTasks(){
             li.setAttribute('contenteditable', 'false');
             tasks.appendChild(li);
             let img = document.createElement('img');
-            img.src = 'C:\\Users\\ASUS\\Desktop\\tm\\images\\edit26.png';
+            img.src = './images/edit26.png';
             img.setAttribute('tabindex', '-1');
             li.appendChild(img);
             let p = document.createElement('p');
@@ -31,12 +32,14 @@ function getTasks(){
     });
 }
 
+// calls function getTasks() when DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
     const reload = document.getElementById('tasks');
     reload.innerHTML = '';
     getTasks();
 });
 
+// checks if user has registered before, if yes allows user to login
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -63,6 +66,7 @@ function login() {
     });
 }
 
+// register a new user
 function signup() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -93,10 +97,12 @@ function signup() {
     });
 }
 
+// logout
 function logout() {
     window.location.href = 'index.html';
 }
 
+// add tasks to mockAPI and to profile
 function addTask(){
     const taskInput = document.getElementById('task');
     const task = taskInput.value;
@@ -105,41 +111,47 @@ function addTask(){
         task: task,
         done: false
     };
-
-    fetch(url, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(newTask)
-    })
-    .then(response => {
-        if (response.ok) {            
-            return response.json();
+    if (task != ''){
+        console.log('aaaaaaaaaa')
+        fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newTask)
+        })
+        .then(response => {
+            if (response.ok) {            
+                return response.json();
+            }
+            throw new Error('Error adding task');
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+        if(task==='')
+            alert('it is empty');
+        else {        
+            let li = document.createElement('li');
+            li.textContent = task;
+            li.setAttribute('contenteditable', 'false');
+            tasks.appendChild(li);
+            let img = document.createElement('img');
+            img.src = './images/edit26.png';
+            img.setAttribute('tabindex', '-1');
+            li.appendChild(img);
+            let p = document.createElement('p');
+            p.innerHTML = '\u00d7';
+            p.setAttribute('tabindex', '-1');
+            li.appendChild(p);
         }
-        throw new Error('Error adding task');
-    })
-    .catch(error => {
-        alert(error.message);
-    });
-    if(task==='')
-        alert('it is empty');
-    else {        
-        let li = document.createElement('li');
-        li.textContent = task;
-        li.setAttribute('contenteditable', 'false');
-        tasks.appendChild(li);
-        let img = document.createElement('img');
-        img.src = 'C:\\Users\\ASUS\\Desktop\\tm\\images\\edit26.png';
-        img.setAttribute('tabindex', '-1');
-        li.appendChild(img);
-        let p = document.createElement('p');
-        p.innerHTML = '\u00d7';
-        p.setAttribute('tabindex', '-1');
-        li.appendChild(p);
+        taskInput.value = '';
+        saveTasks();
     }
-    taskInput.value = '';
-    saveTasks();
+    else {
+        alert('It is empty');
+    }
 }
 
+// delete tasks from mockAPI
 function deleteTask(taskTitle) {
     const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
     fetch(url)
@@ -165,6 +177,7 @@ function deleteTask(taskTitle) {
     });
 }
 
+// marks task as done on mockAPI
 function done(taskTitle){
     const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
     fetch(url)
@@ -196,6 +209,7 @@ function done(taskTitle){
     });
 }
 
+// updates task on mockAPI
 function update(taskTitle, newInput) {   
     const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
     fetch(url)
@@ -224,9 +238,10 @@ function update(taskTitle, newInput) {
     });
     saveTasks();
 }
+
+// marks done, deletes, updates on profile.html
 let oldTitle = '';
 tasks.addEventListener('click', function(e) {
-    console.log(document.querySelector('li').getAttribute('contenteditable'))
     if(e.target.tagName === 'LI' && e.target.getAttribute('contenteditable') === 'false'){
         const taskTitle = e.target.textContent.slice(0, -1);
         e.target.classList.toggle('done');
@@ -246,12 +261,12 @@ tasks.addEventListener('click', function(e) {
         }
         const text = e.target.parentElement;
         if(e.target.src.includes('edit')){
-            e.target.src='C:\\Users\\ASUS\\Desktop\\tm\\images\\save26.png';
+            e.target.src='./images/save26.png';
             text.contentEditable = true;        
             text.focus();
         }
         else if(e.target.src.includes('save')){
-            e.target.src='C:\\Users\\ASUS\\Desktop\\tm\\images\\edit26.png';
+            e.target.src='./images/edit26.png';
             text.contentEditable = false;
             text.blur();
             let newInput = text.firstChild.textContent.trim();
@@ -261,16 +276,94 @@ tasks.addEventListener('click', function(e) {
     }
 });
 
+// shows all tasks in profile.html
+function all() {
+    const reload = document.getElementById('tasks');
+    reload.innerHTML = '';
+    getTasks();
+}
+// calls function all() when tag with class .all is clicked
+document.querySelector('.all').addEventListener('click', all);
+
+// shows active tasks in profile.html
+function active() {
+    const reload = document.getElementById('tasks');
+    reload.innerHTML = ''; 
+    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
+    return fetch(url)
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Failed to fetch tasks');
+    })
+    .then(data => {
+        for (let i = 0; i < data.length; i++){
+            let li = document.createElement('li');
+            li.textContent = data[i].task;
+            li.setAttribute('contenteditable', 'false');
+            if (data[i].done === false) {
+                tasks.appendChild(li);
+                let img = document.createElement('img');
+                img.src = './images/edit26.png';
+                img.setAttribute('tabindex', '-1');
+                li.appendChild(img);
+                let p = document.createElement('p');
+                p.setAttribute('tabindex', '-1');
+                p.innerHTML = '\u00d7';
+                li.appendChild(p);
+            }
+        }
+    })
+    .catch(error => {
+        alert(error.message);
+    });
+}
+
+// shows completed tasks in profile.html
+function completed() {
+    const reload = document.getElementById('tasks');
+    reload.innerHTML = ''; 
+    const url = 'https://6566caea64fcff8d730f1107.mockapi.io/api/v1/task';
+    return fetch(url)
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Failed to fetch tasks');
+    })
+    .then(data => {
+        for (let i = 0; i < data.length; i++){
+            let li = document.createElement('li');
+            li.textContent = data[i].task;
+            li.setAttribute('contenteditable', 'false');
+            if (data[i].done === true) {
+                tasks.appendChild(li);
+                let img = document.createElement('img');
+                img.src = './images/edit26.png';
+                img.setAttribute('tabindex', '-1');
+                li.appendChild(img);
+                let p = document.createElement('p');
+                p.setAttribute('tabindex', '-1');
+                p.innerHTML = '\u00d7';
+                li.appendChild(p);
+                li.classList.add('done');
+            }
+        }
+    })
+    .catch(error => {
+        alert(error.message);
+    });
+}
+
+// saves tasks to localStorage
 function saveTasks(){
     localStorage.setItem('tasks', tasks.innerHTML);
 }
+
+// function to show tasks from localStorage
 function showTasks(){
     tasks.innerHTML = localStorage.getItem('tasks');
 }
+// calls function showTasks()
 showTasks();
-
-document.body.addEventListener('resize', function() {
-    const nav = document.querySelector('nav');
-    const windowWidth = window.innerWidth;
-    nav.style.width = windowWidth + 'px';
-});

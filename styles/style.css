@@ -1,3 +1,4 @@
+/* body */
 body {
     margin: 0;
     height: 100vh;
@@ -8,6 +9,8 @@ body {
     flex-direction: column;
     align-content: center;
 }
+
+/* nav */
 nav {
     background-color: #1E3913;
     padding: 0 1rem;
@@ -24,13 +27,6 @@ nav li {
     align-items: center;
     padding: 0 1rem;
 }
-.logo {
-    display: flex;
-}
-.logo .highlight {
-    color: #c8f2b1;
-    margin-left: 0.3rem;
-}
 nav a {
     text-decoration: none;
     padding: 0.5rem;
@@ -41,6 +37,12 @@ nav p, nav a {
     font-size: 2rem;
 }
 
+/* logo */
+.logo .highlight {
+    color: #c8f2b1;
+}
+
+/* main */
 .container {
     display: flex;
     flex-direction: column;
@@ -49,6 +51,8 @@ nav p, nav a {
     padding: 1.5rem;
     border-radius: 3rem;
 }
+
+/* header */
 .header {
     display: flex;
     flex-direction: column;
@@ -59,6 +63,8 @@ nav p, nav a {
     font-size: 2.7rem;
     font-weight: 700;
 }
+
+/* username & password & email */
 .inputs {
     display: flex;
     flex-direction: column;
@@ -82,6 +88,8 @@ nav p, nav a {
     color: #1E3913;
     font-size: 1.5rem;
 }
+
+/* login & signup  buttons */
 .submits {
     display: flex;
     margin-top: 1rem;
@@ -101,7 +109,13 @@ nav p, nav a {
     cursor: default;
     border: none;
 }
-.gray {
-    background-color: rgba(150, 180, 145, 0.37);
-    color: rgb(124, 124, 124);
+
+/* for navbar when width =< 720px */
+@media (max-width: 720px) {
+    nav{
+        width: 100%;
+        position: fixed;
+        left: 0;
+        right: 0;
+    }
 }

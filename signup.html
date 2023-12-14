@@ -1,40 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Sign Up</title>
   <link rel="stylesheet" href="styles/style.css">
 </head>
+
 <body>
+    <!-- navbar -->
     <nav>
+        <!-- logo -->
         <p class="logo">
             To<span class="highlight">Do</span>
         </p>
+        <!-- links -->
         <ul>
             <li><a href="signup.html">Sign Up</a></li>
             <li><a href="index.html">Login</a></li>
         </ul>
     </nav>
+    <!-- main -->
     <div class="container">
+        <!-- header -->
         <div class="header">Sign Up</div>
+
         <div class="inputs">
+            <!-- username -->
             <div class="input">
             <img src="images/user.png" alt="user icon">
             <input type="text" placeholder="Username" id="username">
             </div>
+            <!-- email -->
             <div class="input email">
             <img src="images/email.png" alt="email icon">
             <input type="email" placeholder="Email" id="email">
             </div>
+            <!-- password -->
             <div class="input">
             <img src="images/password.png" alt="password icon">
             <input type="password" placeholder="Password" id="password">
             </div>
         </div>
+
+        <!-- signup button -->
         <div class="submits">
             <button type="submit" class="submit" onclick="signup()">Sign Up</button>
         </div>
     </div>
     <script src="js/script.js"></script>
 </body>
+
 </html>
