@@ -88,6 +88,7 @@ nav p, nav a {
     color: #1E3913;
     font-size: 1.5rem;
     border-radius: 3rem;
+    padding: 0 0.3em;
 }
 
 /* login & signup  buttons */
